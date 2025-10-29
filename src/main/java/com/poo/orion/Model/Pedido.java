@@ -2,13 +2,18 @@ package com.poo.orion.Model;
 
 import com.poo.orion.Enum.Status;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.util.Date;
 import java.util.List;
 
 @Entity
 @Table(name = "pedido")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Pedido {
 
     @Id
@@ -31,7 +36,7 @@ public class Pedido {
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
     private List<Carrinho> itens;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "id_cupom")
     private Cupom cupom;
 }

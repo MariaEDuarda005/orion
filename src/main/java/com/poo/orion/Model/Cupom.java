@@ -1,13 +1,17 @@
 package com.poo.orion.Model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
 @Entity
 @Table(name = "cupom")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Cupom {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,6 +29,6 @@ public class Cupom {
     @Column(name = "validade_final")
     private Date validade_final;
 
-    @OneToOne(mappedBy = "cupom")
+    @OneToMany(mappedBy = "cupom")
     private Pedido pedido;
 }

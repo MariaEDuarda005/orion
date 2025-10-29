@@ -2,13 +2,17 @@ package com.poo.orion.Model;
 
 import com.poo.orion.Enum.Categoria;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Entity
 @Table(name = "produto")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Produto {
 
     @Id

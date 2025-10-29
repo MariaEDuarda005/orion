@@ -1,11 +1,15 @@
 package com.poo.orion.Model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "carrinho")
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Carrinho {
 
     @Id
