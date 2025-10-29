@@ -1,5 +1,6 @@
 package com.poo.orion.Model;
 
+import com.poo.orion.Enum.Status;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.util.Date;
@@ -19,13 +20,16 @@ public class Pedido {
 
     private float valorTotal;
 
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
     @ManyToOne
     @JoinColumn(name = "id_cliente")
     private Cliente cliente;
 
     // Um pedido tem vários itens
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
-    private List<ItemPedido> itens;
+    private List<Carrinho> itens;
 
     @OneToOne
     @JoinColumn(name = "id_cupom")

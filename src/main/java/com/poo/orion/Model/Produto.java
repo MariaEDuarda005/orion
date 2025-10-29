@@ -1,5 +1,6 @@
 package com.poo.orion.Model;
 
+import com.poo.orion.Enum.Categoria;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -20,7 +21,10 @@ public class Produto {
     private int estoque;
     private float preco;
 
+    @Enumerated(EnumType.STRING)
+    private Categoria categoria;
+
     // Um produto pode aparecer em vários itens de pedido
     @OneToMany(mappedBy = "produto")
-    private List<ItemPedido> itens;
+    private List<Carrinho> itens;
 }

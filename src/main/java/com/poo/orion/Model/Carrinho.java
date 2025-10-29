@@ -4,13 +4,13 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
-@Table(name = "item_pedido")
+@Table(name = "carrinho")
 @Data
-public class ItemPedido {
+public class Carrinho {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idItemPedido;
+    private Long idCarrinho;
 
     @ManyToOne
     @JoinColumn(name = "id_produto")
@@ -20,6 +20,9 @@ public class ItemPedido {
     @JoinColumn(name = "id_pedido")
     private Pedido pedido;
 
+    private float subtotal;
+
     private int quantidade;
+
     private float precoUnitario;
 }
