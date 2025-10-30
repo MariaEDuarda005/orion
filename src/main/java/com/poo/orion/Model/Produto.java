@@ -2,15 +2,14 @@ package com.poo.orion.Model;
 
 import com.poo.orion.Enum.Categoria;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
 @Entity
 @Table(name = "produto")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Produto {
@@ -29,6 +28,6 @@ public class Produto {
     private Categoria categoria;
 
     // Um produto pode aparecer em vários itens de pedido
-    @OneToMany(mappedBy = "produto")
+    @OneToMany(mappedBy = "produto", fetch = FetchType.LAZY)
     private List<Carrinho> itens;
 }

@@ -2,16 +2,15 @@ package com.poo.orion.Model;
 
 import com.poo.orion.Enum.Status;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Date;
 import java.util.List;
 
 @Entity
 @Table(name = "pedido")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Pedido {
@@ -33,7 +32,7 @@ public class Pedido {
     private Cliente cliente;
 
     // Um pedido tem vários itens
-    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Carrinho> itens;
 
     @ManyToOne

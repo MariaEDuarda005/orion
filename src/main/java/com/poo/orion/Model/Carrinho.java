@@ -1,13 +1,14 @@
 package com.poo.orion.Model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "carrinho")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Carrinho {
@@ -24,9 +25,11 @@ public class Carrinho {
     @JoinColumn(name = "id_pedido")
     private Pedido pedido;
 
-    private float subtotal;
-
     private int quantidade;
 
-    private float precoUnitario;
+    private BigDecimal precoUnitario;
+
+    private BigDecimal getSubTotal(){
+        return precoUnitario.multiply(BigDecimal.valueOf(quantidade));
+    }
 }

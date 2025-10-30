@@ -1,15 +1,14 @@
 package com.poo.orion.Model;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Date;
 
 @Entity
 @Table(name = "cupom")
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Cupom {
@@ -23,12 +22,9 @@ public class Cupom {
 
     @Temporal(TemporalType.DATE)
     @Column(name = "validade_inicio")
-    private Date validade_inicio;
+    private Date validadeInicio;
 
     @Temporal(TemporalType.DATE)
-    @Column(name = "validade_final")
-    private Date validade_final;
-
-    @OneToMany(mappedBy = "cupom")
-    private Pedido pedido;
+    @Column(name = "validade_fim")
+    private Date validadeFinal;
 }
