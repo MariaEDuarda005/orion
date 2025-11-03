@@ -6,43 +6,29 @@ import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.Date;
 
-@Getter
-@Setter
-public class CupomDTO {
+public record CupomDTO(
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    private Long idCupom;
+        @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+        Long idCupom,
 
-    private String codigo;
+        String codigo,
 
-    @DecimalMin("0.0")
-    @DecimalMax("100.0")
-    private float percentualDesconto;
+        @DecimalMin("0.0")
+        @DecimalMax("100.0")
+        float percentualDesconto,
 
-    private boolean ativo;
+        boolean ativo,
 
-    @NotNull
-    private Date validadeInicio;
+        @NotNull
+        Date validadeInicio,
 
-    @NotNull
-    private Date validadeFinal;
-
-    public CupomDTO() {}
-
-    public CupomDTO(Long idCupom, String codigo, float percentualDesconto,
-                    boolean ativo, Date validadeInicio, Date validadeFinal) {
-        this.idCupom = idCupom;
-        this.codigo = codigo;
-        this.percentualDesconto = percentualDesconto;
-        this.ativo = ativo;
-        this.validadeInicio = validadeInicio;
-        this.validadeFinal = validadeFinal;
-    }
-
+        @NotNull
+        Date validadeFinal
+) {
+    // Converte uma entidade Cupom para DTO
     public static CupomDTO from(Cupom c) {
         return new CupomDTO(
                 c.getIdCupom(),
@@ -54,6 +40,7 @@ public class CupomDTO {
         );
     }
 
+    // Converte DTO para entidade Cupom
     public Cupom toEntity() {
         Cupom c = new Cupom();
         c.setIdCupom(this.idCupom);
