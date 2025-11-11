@@ -33,7 +33,7 @@ public class CupomService {
     }
 
     public CupomDTO createCupom(CupomDTO dto) {
-        Optional<Cupom> existente = repository.findByCodigoIgnoreCase(dto.getCodigo());
+        Optional<Cupom> existente = repository.findByCodigoIgnoreCase(dto.codigo());
         if (existente.isPresent()) {
             throw new RuntimeException("Já existe um cupom com esse código.");
         }
@@ -47,16 +47,16 @@ public class CupomService {
         Cupom cupom = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Cupom não encontrado"));
 
-        Optional<Cupom> cupomExistente = repository.findByCodigoIgnoreCase(dto.getCodigo());
+        Optional<Cupom> cupomExistente = repository.findByCodigoIgnoreCase(dto.codigo());
         if (cupomExistente.isPresent() && !cupomExistente.get().getIdCupom().equals(id)) {
             throw new RuntimeException("Já existe um cupom com esse código.");
         }
 
-        cupom.setCodigo(dto.getCodigo());
-        cupom.setPercentualDesconto(dto.getPercentualDesconto());
-        cupom.setAtivo(dto.isAtivo());
-        cupom.setValidadeInicio(dto.getValidadeInicio());
-        cupom.setValidadeFinal(dto.getValidadeFinal());
+        cupom.setCodigo(dto.codigo());
+        cupom.setPercentualDesconto(dto.percentualDesconto());
+        cupom.setAtivo(dto.ativo());
+        cupom.setValidadeInicio(dto.validadeInicio());
+        cupom.setValidadeFinal(dto.validadeFinal());
 
         Cupom atualizado = repository.save(cupom);
         return CupomDTO.from(atualizado);
