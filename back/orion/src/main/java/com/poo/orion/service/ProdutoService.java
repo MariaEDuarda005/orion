@@ -1,0 +1,93 @@
+package com.poo.orion.service;
+
+import com.poo.orion.DTO.ProdutoDTO;
+import com.poo.orion.Enum.Categoria;
+import com.poo.orion.Model.Produto;
+import com.poo.orion.repository.ProdutoRepository;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Service
+@AllArgsConstructor
+public class ProdutoService {
+
+    private final ProdutoRepository repository;
+
+    public Produto findById(Long id){
+        return repository.findByIdProduto(id).orElse(null);
+    }
+
+    public List<ProdutoDTO> getAllProdutos(){
+        List<Produto> produtos = repository.findAll();
+
+        return produtos.stream().map(
+                p -> new ProdutoDTO(
+                        p.getNome(),
+                        p.getDescricao(),
+                        p.getEstoque(),
+                        p.getPreco(),
+                        p.getCategoria()
+                )
+        ).collect(Collectors.toList());
+    }
+
+    public ProdutoDTO createProduto(ProdutoDTO produtodto){
+        Produto produto = produtodto.toEntity();
+        Produto create = repository.save(produto);
+        return ProdutoDTO.from(create);
+    }
+
+    public ProdutoDTO putProduto(Long id, ProdutoDTO produtodto) {
+        Produto produto = repository.findByIdProduto(id)
+                .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
+
+        if (produtodto.nome() != null) {
+            produto.setNome(produtodto.nome());
+        }
+
+        if (produtodto.descricao() != null) {
+            produto.setDescricao(produtodto.descricao());
+        }
+
+        produto.setEstoque(produtodto.estoque());
+        produto.setPreco(produtodto.preco());
+
+        if (produtodto.categoria() != null) {
+            produto.setCategoria(produtodto.categoria());
+        }
+
+        Produto atualizado = repository.save(produto);
+        return ProdutoDTO.from(atualizado);
+    }
+
+    public void deleteProduto(Long id){
+        if (!repository.existsById(id)){
+            throw new RuntimeException("Não existe um produto com esse ID");
+        }
+        repository.deleteById(id);
+    }
+
+    public void deleteAllProdutos(){
+        repository.deleteAll();
+    }
+
+    public List<ProdutoDTO> getProdutosByCategoria(String categoria) {
+        try {
+            Categoria catEnum = Categoria.valueOf(categoria.toUpperCase());
+            Optional<Produto> produtos = repository.findByCategoria(catEnum);
+
+            return produtos.stream()
+                    .map(ProdutoDTO::from)
+                    .collect(Collectors.toList());
+
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Categoria inválida: " + categoria);
+        }
+    }
+
+
+}
