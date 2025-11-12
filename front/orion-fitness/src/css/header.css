@@ -1,0 +1,42 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  background-color: #000000;
+  color: rgb(255, 255, 255);
+}
+
+.logo {
+  font-size: 1.5rem;
+}
+
+.nav {
+  display: flex;
+  gap: 1rem;
+}
+
+.nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.nav a.active {
+  border-bottom: 2px solid #b21212;
+}
+
+.infos {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.infos h1 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  color: #f1ecec;
+}
