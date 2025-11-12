@@ -29,7 +29,7 @@ public class Carrinho {
 
     private BigDecimal precoUnitario;
 
-    private BigDecimal getSubTotal(){
+    public BigDecimal getSubTotal(){
         return precoUnitario.multiply(BigDecimal.valueOf(quantidade));
     }
 }

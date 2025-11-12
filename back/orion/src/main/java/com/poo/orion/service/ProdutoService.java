@@ -41,21 +41,24 @@ public class ProdutoService {
         return ProdutoDTO.from(create);
     }
 
-    public ProdutoDTO putProduto(Long id, ProdutoDTO produtodto){
+    public ProdutoDTO putProduto(Long id, ProdutoDTO produtodto) {
         Produto produto = repository.findByIdProduto(id)
                 .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
 
-        Optional<Produto> nomeExistente = repository.findByNomeIgnoreCase(produtodto.nome());
-
-        if (nomeExistente.isPresent()){
-            throw new RuntimeException("Já existe um produto com esse nome");
+        if (produtodto.nome() != null) {
+            produto.setNome(produtodto.nome());
         }
 
-        produto.setNome(produto.getNome());
-        produto.setDescricao(produto.getDescricao());
-        produto.setEstoque(produto.getEstoque());
-        produto.setPreco(produto.getPreco());
-        produto.setCategoria(produtodto.categoria());
+        if (produtodto.descricao() != null) {
+            produto.setDescricao(produtodto.descricao());
+        }
+
+        produto.setEstoque(produtodto.estoque());
+        produto.setPreco(produtodto.preco());
+
+        if (produtodto.categoria() != null) {
+            produto.setCategoria(produtodto.categoria());
+        }
 
         Produto atualizado = repository.save(produto);
         return ProdutoDTO.from(atualizado);
