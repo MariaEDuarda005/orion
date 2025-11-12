@@ -1,28 +1,20 @@
 footer {
-  background-color: #111;
-  color: #f5f5f5;
-  font-family: "Poppins", sans-serif;
-  padding: 20px 50px 10px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 10px;
+  position: fixed;
+  bottom: 0;
   width: 100%;
-  margin-top: auto; /* garante que fique no final da página */
+  background-color: #000;
+  text-align: center;
+  padding: 10px;
 }
 
-/* Parte superior: logo + infos/redes */
-footer .top {
+.footer-infos {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 20px;
 }
 
 /* LOGO */
 footer .logo img {
-  width: 120px;
+  width: 80px;
   height: auto;
 }
 
@@ -35,18 +27,13 @@ footer .gerais {
   gap: 6px;
 }
 
-footer .infos p {
-  margin: 0;
-  font-size: 0.85rem;
-  color: #ccc;
-}
-
 /* Redes sociais */
 footer .redes {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
   margin-top: 4px;
+  margin-right: 30px;
 }
 
 footer .redes svg {
@@ -79,6 +66,7 @@ footer .direitos {
   color: #aaa;
   border-top: 1px solid #222;
   padding-top: 8px;
+  margin-right: 30px;
 }
 
 /* Responsividade */
