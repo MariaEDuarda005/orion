@@ -61,6 +61,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-end;
+  margin-left: 12px;
 }
 
 .cart-item-price strong {
