@@ -1,28 +1,22 @@
 footer {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
   background-color: #000;
   text-align: center;
-  padding: 10px;
+  padding: 20px 10px; /* mais espaço interno */
+  margin-top: 40px; /* espaço acima para não ficar grudado no conteúdo */
+  width: 100%;
 }
 
+/* Conteúdo interno */
 .footer-infos {
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 /* LOGO */
 footer .logo img {
-  width: 50px;
+  width: 80px;
   height: auto;
-}
-
-.logo{
-  display: flex;
-  align-content: center;
-  justify-content: center;
-  align-items: center;
 }
 
 /* Informações e redes */
@@ -66,7 +60,7 @@ footer .redes svg:nth-of-type(3):hover {
   color: #0077b5; /* LinkedIn */
 }
 
-/* Direitos autorais (base centralizada) */
+/* Direitos autorais */
 footer .direitos {
   text-align: center;
   font-size: 0.75rem;
@@ -78,14 +72,9 @@ footer .direitos {
 
 /* Responsividade */
 @media (max-width: 768px) {
-  footer {
-    padding: 20px;
-  }
-
-  footer .top {
+  .footer-infos {
     flex-direction: column;
-    align-items: center;
-    text-align: center;
+    gap: 20px;
   }
 
   footer .gerais {
@@ -95,5 +84,10 @@ footer .direitos {
 
   footer .redes {
     justify-content: center;
+    margin-right: 0;
+  }
+
+  footer .direitos {
+    margin-right: 0;
   }
 }

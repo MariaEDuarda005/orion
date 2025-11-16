@@ -1,0 +1,87 @@
+/* --- ABOUT PAGE --- */
+
+.about-container {
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.about-container h1 {
+    font-size: 2rem;
+    margin: 80px;
+    color: #000;
+}
+
+.team-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.team-card {
+    background-color: #ffffff;
+    width: 280px;
+    padding: 25px;
+    border-radius: 12px;
+    position: relative;
+    text-align: center;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    transition: 0.3s ease;
+}
+
+.team-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+}
+
+/* FOTO – metade dentro, metade fora */
+.team-img {
+    width: 140px;
+    height: 140px;
+    background-size: cover;
+    background-position: center;
+    border-radius: 50%;
+    border: 5px solid #fff;
+    position: absolute;
+    top: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+/* Foto Carolina */
+.carol-img {
+    background-image: url("https://avatars.githubusercontent.com/u/179043499?v=4"); /* coloque a foto aqui */
+}
+
+/* Foto Maria */
+.maria-img {
+    background-image: url("https://avatars.githubusercontent.com/u/152435513?v=4"); /* coloque a foto aqui */
+}
+
+.team-card h3 {
+    margin-top: 110px; /* por causa da foto */
+    font-size: 1.4rem;
+    color: #000;
+}
+
+.team-card p {
+    font-size: 1rem;
+    color: #d00015;
+}
+
+/* --- Dark Mode --- */
+body.dark-mode .team-card {
+    background-color: #1e1e1e;
+    color: #f1f1f1;
+    border: 1px solid #333;
+}
+
+body.dark-mode .team-card h3 {
+    color: #ff4b5c;
+}
+
+body.dark-mode .team-card p {
+    color: #ddd;
+}

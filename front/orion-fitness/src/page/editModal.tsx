@@ -1,10 +1,10 @@
 import { useState } from "react";
 import api from "../services/api";
-import type { produtosData } from "../interface/produtosData";
+import type { produtosEdit } from "../interface/produtoEdit";
 import "../css/admin.css";
 
 interface Props {
-  produto: produtosData;
+  produto: produtosEdit;
   onClose: () => void;
   reload: () => void;
 }

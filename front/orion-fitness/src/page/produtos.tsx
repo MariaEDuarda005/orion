@@ -3,7 +3,7 @@ import { FaSearch } from 'react-icons/fa';
 import type { produtosData } from "../interface/produtosData";
 import api from "../services/api";
 import imagemPadrao from "../assets/imagem.png";
-import "../css/produto.css";
+import "../css/produto.css"; // mantém o arquivo para search-bar / select
 
 function Produtos() {
   const [data, setData] = useState<produtosData[]>([]);
@@ -80,11 +80,25 @@ function Produtos() {
       <div className="card-grid">
         {produtosFiltrados.length > 0 ? (
           produtosFiltrados.map((produto, index) => (
-            <div className="card" key={index}>
-              <img src={produto.imagem ? produto.imagem : imagemPadrao} alt={produto.nome} />
-              <p className="nome">{produto.nome}</p>
-              <p className="preco">R$ {produto.preco.toFixed(2)}</p>
-              <button>Comprar</button>
+            <div className="item-produtos" key={index}>
+              <img
+                src={produto.imagem ? produto.imagem : imagemPadrao}
+                alt={produto.nome}
+              />
+
+              <p className="text1-produto">{produto.nome}</p>
+
+              <div className="estrelas">
+                <i className="bi bi-star-fill"></i>
+                <i className="bi bi-star-fill"></i>
+                <i className="bi bi-star-fill"></i>
+                <i className="bi bi-star-fill"></i>
+                <i className="bi bi-star-fill"></i>
+              </div>
+
+              <p className="text2-produto">R$ {produto.preco.toFixed(2)}</p>
+
+              <button className="comprar-produto">Ver mais</button>
             </div>
           ))
         ) : (
