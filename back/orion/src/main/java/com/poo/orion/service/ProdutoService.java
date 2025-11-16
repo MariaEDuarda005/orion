@@ -42,11 +42,17 @@ public class ProdutoService {
     }
 
     public ProdutoDTO putProduto(Long id, ProdutoDTO produtodto) {
-        Produto produto = repository.findByIdProduto(id)
+        Produto produto = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
 
-        if (produtodto.nome() != null) {
-            produto.setNome(produtodto.nome());
+        if (produtodto.nome() != null && !produtodto.nome().trim().isEmpty()) {
+            String novoNome = produtodto.nome().trim();
+            if (!produto.getNome().equalsIgnoreCase(novoNome)){
+                if (repository.existsByNameIgnoreCase(novoNome)){
+                    throw new RuntimeException("Ops! Esse nome de produto já está cadastrado");
+                }
+                produto.setNome(novoNome);
+            }
         }
 
         if (produtodto.descricao() != null) {
