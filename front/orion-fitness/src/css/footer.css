@@ -1,8 +1,9 @@
 footer {
+  left: 0;
+  bottom: 0;
   background-color: #000;
   text-align: center;
   padding: 20px 10px; /* mais espaço interno */
-  margin-top: 40px; /* espaço acima para não ficar grudado no conteúdo */
   width: 100%;
 }
 

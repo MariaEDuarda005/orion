@@ -7,9 +7,11 @@ function App() {
   return (
     <BrowserRouter>
       <Header />
-      <main style={{ padding: "1rem 2rem" }}>
+
+      <main style={{ padding: "1rem 2rem", flex: 1 }}>
         <AppRoutes />
       </main>
+
       <Footer />
     </BrowserRouter>
   );
