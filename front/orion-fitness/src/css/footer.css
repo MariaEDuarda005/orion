@@ -14,8 +14,15 @@ footer {
 
 /* LOGO */
 footer .logo img {
-  width: 80px;
+  width: 50px;
   height: auto;
+}
+
+.logo{
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
 }
 
 /* Informações e redes */
