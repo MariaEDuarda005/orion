@@ -3,9 +3,17 @@ package com.poo.orion.DTO;
 import com.poo.orion.Enum.Categoria;
 import com.poo.orion.Model.Produto;
 
-public record ProdutoDTO(String nome, String descricao, int estoque, float preco, Categoria categoria) {
+public record ProdutoDTO(
+        Long id,
+        String nome,
+        String descricao,
+        int estoque,
+        float preco,
+        Categoria categoria
+) {
     public static ProdutoDTO from(Produto p) {
         return new ProdutoDTO(
+                p.getIdProduto(),
                 p.getNome(),
                 p.getDescricao(),
                 p.getEstoque(),
@@ -16,6 +24,7 @@ public record ProdutoDTO(String nome, String descricao, int estoque, float preco
 
     public Produto toEntity() {
         Produto produto = new Produto();
+        produto.setIdProduto(this.id); // necessário se quiser atualizar
         produto.setNome(this.nome);
         produto.setDescricao(this.descricao);
         produto.setEstoque(this.estoque);
@@ -24,3 +33,4 @@ public record ProdutoDTO(String nome, String descricao, int estoque, float preco
         return produto;
     }
 }
+

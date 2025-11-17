@@ -1,42 +1,56 @@
-
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Trash2 } from "lucide-react";
+import type { CartData } from "../interface/card";
+import type { produtosData } from "../interface/produtosData";
 import CheckoutModal from "../components/checkoutModal";
+import api from "../services/api";
 import "../css/cart.css";
 
-interface CartItem {
-  id: number;
-  name: string;
-  price: number;
-  quantity: number;
-  img?: string;
-}
-
 export default function Cart() {
-  const [cart, setCart] = useState<CartItem[]>([
-    { id: 1, name: "Creatina Monohidratada 300g", price: 119.9, quantity: 1 },
-    { id: 2, name: "Regata DryFit Performance – Preta", price: 69.9, quantity: 2 },
-  ]);
-
-  const [discount, setDiscount] = useState<number>(60.4);
+  const [cart, setCart] = useState<CartData[]>([]);
+  const [discount, setDiscount] = useState<number>(0);
   const [coupon, setCoupon] = useState<string>("");
   const [showModal, setShowModal] = useState<boolean>(false);
 
-  const subtotal = cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
+  // Buscar carrinho do backend e popular com produtos
+  useEffect(() => {
+    async function fetchCart() {
+      try {
+        // Buscar itens do carrinho do usuário logado (trocar ID pelo usuário real)
+        const carrinhoResponse = await api.get<CartData[]>("/carrinho/usuario/1");
+        const carrinhoData = carrinhoResponse.data;
+
+        // Buscar produto completo para cada item do carrinho
+        const produtosPromises = carrinhoData.map(async (item) => {
+          const produtoResponse = await api.get<produtosData>(`/produtos/${item.produtoId}`);
+          return { ...item, produto: produtoResponse.data };
+        });
+
+        const cartWithProducts = await Promise.all(produtosPromises);
+        setCart(cartWithProducts);
+      } catch (error) {
+        console.error("Erro ao carregar carrinho:", error);
+      }
+    }
+
+    fetchCart();
+  }, []);
+
+  const subtotal = cart.reduce((acc, item) => acc + item.precoUnitario * item.quantidade, 0);
   const total = subtotal - discount;
 
-  const updateQuantity = (id: number, delta: number) => {
+  const updateQuantity = (produtoId: number, delta: number) => {
     setCart((prev) =>
       prev.map((item) =>
-        item.id === id
-          ? { ...item, quantity: Math.max(item.quantity + delta, 1) }
+        item.produtoId === produtoId
+          ? { ...item, quantidade: Math.max(item.quantidade + delta, 1) }
           : item
       )
     );
   };
 
-  const removeItem = (id: number) => {
-    setCart((prev) => prev.filter((item) => item.id !== id));
+  const removeItem = (produtoId: number) => {
+    setCart((prev) => prev.filter((item) => item.produtoId !== produtoId));
   };
 
   const applyCoupon = () => {
@@ -45,6 +59,27 @@ export default function Cart() {
       alert("Cupom aplicado! R$10 de desconto.");
     } else {
       alert("Cupom inválido!");
+    }
+  };
+
+  const finalizarCompra = async () => {
+    try {
+      const pedidoDTO = {
+        clienteId: 1, // Substituir pelo ID do usuário logado
+        cupomId: coupon.toLowerCase() === "desconto10" ? 1 : null,
+        itens: cart.map((item) => ({
+          produtoId: item.produtoId,
+          quantidade: item.quantidade,
+        })),
+      };
+
+      await api.post("/pedidos/criar", pedidoDTO);
+      alert("Pedido realizado com sucesso!");
+      setCart([]);
+      setShowModal(false);
+    } catch (error) {
+      console.error("Erro ao criar pedido:", error);
+      alert("Erro ao finalizar compra.");
     }
   };
 
@@ -57,10 +92,10 @@ export default function Cart() {
           {cart.length === 0 && <p>Seu carrinho está vazio.</p>}
 
           {cart.map((item) => (
-            <div className="cart-item" key={item.id}>
+            <div className="cart-item" key={item.produtoId}>
               <div style={{ display: "flex", alignItems: "center", gap: "1rem", flex: 1 }}>
-                {item.img ? (
-                  <img src={item.img} alt={item.name} />
+                {item.produto?.imagem ? (
+                  <img src={item.produto.imagem} alt={item.produto.nome} />
                 ) : (
                   <div
                     style={{
@@ -79,28 +114,28 @@ export default function Cart() {
                 )}
 
                 <div className="cart-item-info">
-                  <h4>{item.name}</h4>
-                  <p>R$ {item.price.toFixed(2)}</p>
+                  <h4>{item.produto?.nome}</h4>
+                  <p>R$ {item.precoUnitario.toFixed(2)}</p>
                 </div>
               </div>
 
               <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                <button className="cart-qty-btn" onClick={() => updateQuantity(item.id, -1)}>
+                <button className="cart-qty-btn" onClick={() => updateQuantity(item.produtoId, -1)}>
                   -
                 </button>
-                <span>{item.quantity}</span>
-                <button className="cart-qty-btn" onClick={() => updateQuantity(item.id, 1)}>
+                <span>{item.quantidade}</span>
+                <button className="cart-qty-btn" onClick={() => updateQuantity(item.produtoId, 1)}>
                   +
                 </button>
               </div>
 
               <div className="cart-item-price">
-                <strong>R$ {(item.price * item.quantity).toFixed(2)}</strong>
+                <strong>R$ {(item.precoUnitario * item.quantidade).toFixed(2)}</strong>
               </div>
 
               <button
                 className="cart-delete-btn"
-                onClick={() => removeItem(item.id)}
+                onClick={() => removeItem(item.produtoId)}
                 aria-label="Remover item"
               >
                 <Trash2 size={18} />
@@ -113,7 +148,6 @@ export default function Cart() {
       <aside className="cart-summary">
         <h3>Resumo do pedido</h3>
 
-
         <div className="coupon-container">
           <input
             type="text"
@@ -122,7 +156,6 @@ export default function Cart() {
             value={coupon}
             onChange={(e) => setCoupon(e.target.value)}
           />
-
           <button className="coupon-btn" onClick={applyCoupon}>
             Aplicar
           </button>
@@ -152,7 +185,13 @@ export default function Cart() {
         </button>
       </aside>
 
-      {showModal && <CheckoutModal onClose={() => setShowModal(false)} total={total} />}
+      {showModal && (
+        <CheckoutModal
+          onClose={() => setShowModal(false)}
+          onCheckout={finalizarCompra}
+          total={total}
+        />
+      )}
     </div>
   );
 }

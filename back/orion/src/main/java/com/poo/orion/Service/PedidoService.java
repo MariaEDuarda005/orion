@@ -2,10 +2,8 @@ package com.poo.orion.Service;
 
 import com.poo.orion.DTO.CarrinhoDTO;
 import com.poo.orion.DTO.PedidoDTO;
-import com.poo.orion.Enum.Status;
 import com.poo.orion.Model.*;
 import com.poo.orion.Repository.*;
-import com.poo.orion.repository.ProdutoRepository;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -31,7 +29,9 @@ public class PedidoService {
     }
 
     public List<PedidoDTO> getAllPedidos() {
-        return pedidoRepository.findAll().stream().map(PedidoDTO::from).collect(Collectors.toList());
+        return pedidoRepository.findAll().stream()
+                .map(PedidoDTO::from)
+                .collect(Collectors.toList());
     }
 
     public PedidoDTO getPedidoById(Long id) {
@@ -42,7 +42,6 @@ public class PedidoService {
     public PedidoDTO createPedido(PedidoDTO dto) {
         Pedido pedido = new Pedido();
         pedido.setDataPedido(new Date());
-        pedido.setStatus(Status.PENDENTE);
 
         Cliente cliente = clienteRepository.findById(dto.clienteId())
                 .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
@@ -55,17 +54,20 @@ public class PedidoService {
         }
 
         List<Carrinho> carrinhoItens = new ArrayList<>();
-        float valorTotal = 0;
+        BigDecimal valorTotal = BigDecimal.ZERO;
+
         for(CarrinhoDTO itemDto : dto.itens()){
             Produto produto = produtoRepository.findById(itemDto.produtoId())
                     .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
+
             Carrinho item = new Carrinho();
             item.setProduto(produto);
             item.setQuantidade(itemDto.quantidade());
             item.setPrecoUnitario(BigDecimal.valueOf(produto.getPreco()));
             item.setPedido(pedido);
             carrinhoItens.add(item);
-            valorTotal += item.getSubTotal().floatValue();
+
+            valorTotal = valorTotal.add(item.getSubTotal());
         }
 
         pedido.setItens(carrinhoItens);
@@ -73,13 +75,6 @@ public class PedidoService {
 
         Pedido salvo = pedidoRepository.save(pedido);
         return PedidoDTO.from(salvo);
-    }
-
-    public PedidoDTO updatePedidoStatus(Long id, String status) {
-        Pedido pedido = pedidoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
-        pedido.setStatus(Status.valueOf(status.toUpperCase()));
-        return PedidoDTO.from(pedidoRepository.save(pedido));
     }
 
     public void deletePedido(Long id) {

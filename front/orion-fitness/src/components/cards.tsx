@@ -1,7 +1,7 @@
-import { produtosEdit } from "../interface/produtosEdit";
+import type { produtosData } from "../interface/produtosData";
 
 interface ProdutoProps {
-  data: produtosEdit;
+  data: produtosData;
   imagem: string;
 }
 
@@ -12,7 +12,6 @@ export default function Produto({ data, imagem }: ProdutoProps) {
 
       <p className="text1-produto">{data.nome}</p>
 
-      {/* Aqui deixei estrelas fixas — você pode colocar dinâmicas se quiser */}
       <div className="estrelas">
         <i className="bi bi-star-fill"></i>
         <i className="bi bi-star-fill"></i>

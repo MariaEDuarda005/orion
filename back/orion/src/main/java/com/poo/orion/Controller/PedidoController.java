@@ -2,6 +2,7 @@ package com.poo.orion.Controller;
 
 import com.poo.orion.DTO.PedidoDTO;
 import com.poo.orion.Service.PedidoService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,9 +28,10 @@ public class PedidoController {
         return ResponseEntity.ok(service.getPedidoById(id));
     }
 
-    @PostMapping("/atualizar/{id}")
-    public ResponseEntity<PedidoDTO> atualizarPedido(@PathVariable Long id, String status){
-        return ResponseEntity.ok(service.updatePedidoStatus(id, status));
+    @PostMapping("/criar")
+    public ResponseEntity<PedidoDTO> criarPedido(@RequestBody PedidoDTO dto){
+        PedidoDTO criado = service.createPedido(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(criado);
     }
 
     @DeleteMapping("/{id}")

@@ -1,9 +1,9 @@
-package com.poo.orion.service;
+package com.poo.orion.Service;
 
 import com.poo.orion.DTO.ProdutoDTO;
 import com.poo.orion.Enum.Categoria;
 import com.poo.orion.Model.Produto;
-import com.poo.orion.repository.ProdutoRepository;
+import com.poo.orion.Repository.ProdutoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,15 +24,9 @@ public class ProdutoService {
     public List<ProdutoDTO> getAllProdutos(){
         List<Produto> produtos = repository.findAll();
 
-        return produtos.stream().map(
-                p -> new ProdutoDTO(
-                        p.getNome(),
-                        p.getDescricao(),
-                        p.getEstoque(),
-                        p.getPreco(),
-                        p.getCategoria()
-                )
-        ).collect(Collectors.toList());
+        return produtos.stream()
+                .map(ProdutoDTO::from)
+                .collect(Collectors.toList());
     }
 
     public ProdutoDTO createProduto(ProdutoDTO produtodto){

@@ -2,7 +2,7 @@ package com.poo.orion.Controller;
 
 import com.poo.orion.DTO.ProdutoDTO;
 import com.poo.orion.Model.Produto;
-import com.poo.orion.service.ProdutoService;
+import com.poo.orion.Service.ProdutoService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;

@@ -1,4 +1,4 @@
-package com.poo.orion.repository;
+package com.poo.orion.Repository;
 
 import com.poo.orion.Enum.Categoria;
 import com.poo.orion.Model.Produto;

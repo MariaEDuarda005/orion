@@ -30,17 +30,16 @@ CREATE TABLE pedido (
     valor_total DECIMAL(10,2) NOT NULL,
     id_cliente BIGINT NOT NULL,
     id_cupom BIGINT,
-    status ENUM('PENDENTE', 'ENVIADO', 'CANCELADO') NOT NULL,
     CONSTRAINT pedido_cliente FOREIGN KEY (id_cliente) REFERENCES cliente(id_cliente),
     CONSTRAINT pedido_cupom FOREIGN KEY (id_cupom) REFERENCES cupom(id_cupom)
 );
 
 CREATE TABLE carrinho (
     id_carrinho BIGINT AUTO_INCREMENT PRIMARY KEY,
-    id_pedido BIGINT NOT NULL,
     id_produto BIGINT NOT NULL,
+    id_cliente BIGINT NOT NULL,
     quantidade INT NOT NULL,
     preco_unitario DECIMAL(10,2) NOT NULL,
-    CONSTRAINT item_pedido_pedido FOREIGN KEY (id_pedido) REFERENCES pedido(id_pedido),
-    CONSTRAINT item_pedido_produto FOREIGN KEY (id_produto) REFERENCES produto(id_produto)
+    CONSTRAINT carrinho_produto FOREIGN KEY (id_produto) REFERENCES produto(id_produto),
+    CONSTRAINT carrinho_cliente FOREIGN KEY (id_cliente) REFERENCES cliente(id_cliente)
 );

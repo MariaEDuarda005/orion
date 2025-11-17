@@ -5,36 +5,33 @@ import "../css/checkoutModal.css";
 interface Props {
   onClose: () => void;
   total: number;
+  onCheckout: (nome: string, telefone: string, cpf: string) => Promise<void>; // nova prop
 }
 
-export default function CheckoutModal({ onClose, total }: Props) {
+export default function CheckoutModal({ onClose, total, onCheckout }: Props) {
   const [nome, setNome] = useState("");
   const [telefone, setTelefone] = useState("");
   const [cpf, setCpf] = useState("");
 
-  function handleSubmit() {
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit() {
     if (!nome.trim() || !telefone.trim() || !cpf.trim()) {
       alert("Por favor, preencha todos os campos antes de enviar o pedido.");
       return;
     }
 
-  
-    const msg = `
-Novo pedido realizado:
-
-Nome: ${nome}
-Telefone: ${telefone}
-CPF: ${cpf}
-
-Total: R$ ${total.toFixed(2)}
-    `;
-
-    const numero = "5519999999"; 
-    const url = `https://wa.me/${numero}?text=${encodeURIComponent(msg)}`;
-
-    window.open(url, "_blank");
-
-    onClose();
+    try {
+      setLoading(true);
+      await onCheckout(nome, telefone, cpf); // chama a função que cria o cliente + pedido
+      alert("Pedido finalizado com sucesso!");
+      onClose();
+    } catch (err) {
+      console.error(err);
+      alert("Erro ao finalizar o pedido.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -66,7 +63,7 @@ Total: R$ ${total.toFixed(2)}
           />
         </div>
 
-        <div class="modal-group">
+        <div className="modal-group">
           <label>CPF</label>
           <input
             type="text"
@@ -76,8 +73,8 @@ Total: R$ ${total.toFixed(2)}
           />
         </div>
 
-        <button className="modal-submit" onClick={handleSubmit}>
-          Enviar pedido (R$ {total.toFixed(2)})
+        <button className="modal-submit" onClick={handleSubmit} disabled={loading}>
+          {loading ? "Finalizando..." : `Enviar pedido (R$ ${total.toFixed(2)})`}
         </button>
       </div>
     </div>

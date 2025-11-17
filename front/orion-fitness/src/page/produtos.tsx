@@ -3,13 +3,15 @@ import { FaSearch } from 'react-icons/fa';
 import type { produtosData } from "../interface/produtosData";
 import api from "../services/api";
 import imagemPadrao from "../assets/imagem.png";
-import "../css/produto.css"; // mantém o arquivo para search-bar / select
+import { useNavigate } from "react-router-dom";
+import "../css/produto.css";
 
 function Produtos() {
   const [data, setData] = useState<produtosData[]>([]);
   const [loading, setLoading] = useState(true);
   const [valorDaBusca, setValorDaBusca] = useState("");
   const [categoria, setCategoria] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     buscarProdutos();
@@ -98,7 +100,12 @@ function Produtos() {
 
               <p className="text2-produto">R$ {produto.preco.toFixed(2)}</p>
 
-              <button className="comprar-produto">Ver mais</button>
+              <button
+                className="comprar-produto"
+                onClick={() => navigate(`/produto/${produto.id}`)}
+              >
+                Ver mais
+              </button>
             </div>
           ))
         ) : (
