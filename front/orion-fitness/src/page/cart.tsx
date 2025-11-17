@@ -16,11 +16,9 @@ export default function Cart() {
   useEffect(() => {
     async function fetchCart() {
       try {
-        // Buscar itens do carrinho do usuário logado (trocar ID pelo usuário real)
         const carrinhoResponse = await api.get<CartData[]>("/carrinho/usuario/1");
         const carrinhoData = carrinhoResponse.data;
 
-        // Buscar produto completo para cada item do carrinho
         const produtosPromises = carrinhoData.map(async (item) => {
           const produtoResponse = await api.get<produtosData>(`/produtos/${item.produtoId}`);
           return { ...item, produto: produtoResponse.data };
@@ -62,23 +60,42 @@ export default function Cart() {
     }
   };
 
-  const finalizarCompra = async () => {
+  // Função principal para finalizar compra
+  const finalizarCompra = async (nome: string, telefone: string, cpf: string) => {
     try {
-      const pedidoDTO = {
-        clienteId: 1, // Substituir pelo ID do usuário logado
-        cupomId: coupon.toLowerCase() === "desconto10" ? 1 : null,
-        itens: cart.map((item) => ({
-          produtoId: item.produtoId,
-          quantidade: item.quantidade,
-        })),
-      };
+      // 1️⃣ Criar cliente no backend
+      const clienteResponse = await api.post("/clientes", {
+        nomeCliente: nome,
+        telefoneCliente: telefone,
+        cpf: cpf,
+      });
+      const cliente = clienteResponse.data;
 
-      await api.post("/pedidos/criar", pedidoDTO);
-      alert("Pedido realizado com sucesso!");
+      // 2️⃣ Finalizar carrinho -> gerar pedido
+      const pedidoResponse = await api.post("/carrinho/finalizar", {
+        clienteId: cliente.id,
+        cupomId: coupon.toLowerCase() === "desconto10" ? 1 : null,
+      });
+      const pedido = pedidoResponse.data;
+
+      // 3️⃣ Montar mensagem para WhatsApp
+      let mensagem = `Olá ${nome}, seu pedido foi realizado:\n\n`;
+      cart.forEach((item) => {
+        mensagem += `${item.quantidade}x ${item.produto?.nome} - R$ ${(item.precoUnitario * item.quantidade).toFixed(2)}\n`;
+      });
+      mensagem += `\nTotal: R$ ${total.toFixed(2)}`;
+
+      // 4️⃣ Abrir WhatsApp
+      const whatsappUrl = `https://wa.me/${telefone.replace(/\D/g, "")}?text=${encodeURIComponent(mensagem)}`;
+      window.open(whatsappUrl, "_blank");
+
+      // 5️⃣ Limpar carrinho e fechar modal
       setCart([]);
       setShowModal(false);
+
+      alert("Pedido finalizado com sucesso!");
     } catch (error) {
-      console.error("Erro ao criar pedido:", error);
+      console.error("Erro ao finalizar compra:", error);
       alert("Erro ao finalizar compra.");
     }
   };
