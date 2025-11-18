@@ -14,13 +14,19 @@ import java.util.stream.Collectors;
 
 @Service
 public class PedidoService {
+
     private final PedidoRepository pedidoRepository;
     private final ClienteRepository clienteRepository;
     private final CupomRepository cupomRepository;
     private final ProdutoRepository produtoRepository;
     private final CarrinhoRepository carrinhoRepository;
 
-    public PedidoService(PedidoRepository pedidoRepository, ClienteRepository clienteRepository, CupomRepository cupomRepository, ProdutoRepository produtoRepository, CarrinhoRepository carrinhoRepository) {
+    public PedidoService(PedidoRepository pedidoRepository,
+                         ClienteRepository clienteRepository,
+                         CupomRepository cupomRepository,
+                         ProdutoRepository produtoRepository,
+                         CarrinhoRepository carrinhoRepository) {
+
         this.pedidoRepository = pedidoRepository;
         this.clienteRepository = clienteRepository;
         this.cupomRepository = cupomRepository;
@@ -35,11 +41,13 @@ public class PedidoService {
     }
 
     public PedidoDTO getPedidoById(Long id) {
-        return PedidoDTO.from(pedidoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pedido não encontrado")));
+        Pedido pedido = pedidoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
+        return PedidoDTO.from(pedido);
     }
 
     public PedidoDTO createPedido(PedidoDTO dto) {
+
         Pedido pedido = new Pedido();
         pedido.setDataPedido(new Date());
 
@@ -47,7 +55,7 @@ public class PedidoService {
                 .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
         pedido.setCliente(cliente);
 
-        if(dto.cupomId() != null){
+        if (dto.cupomId() != null) {
             Cupom cupom = cupomRepository.findById(dto.cupomId())
                     .orElseThrow(() -> new RuntimeException("Cupom não encontrado"));
             pedido.setCupom(cupom);
@@ -56,7 +64,8 @@ public class PedidoService {
         List<Carrinho> carrinhoItens = new ArrayList<>();
         BigDecimal valorTotal = BigDecimal.ZERO;
 
-        for(CarrinhoDTO itemDto : dto.itens()){
+        for (CarrinhoDTO itemDto : dto.itens()) {
+
             Produto produto = produtoRepository.findById(itemDto.produtoId())
                     .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
 
@@ -65,8 +74,8 @@ public class PedidoService {
             item.setQuantidade(itemDto.quantidade());
             item.setPrecoUnitario(BigDecimal.valueOf(produto.getPreco()));
             item.setPedido(pedido);
-            carrinhoItens.add(item);
 
+            carrinhoItens.add(item);
             valorTotal = valorTotal.add(item.getSubTotal());
         }
 

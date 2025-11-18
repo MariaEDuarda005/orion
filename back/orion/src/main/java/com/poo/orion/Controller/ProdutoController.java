@@ -1,8 +1,8 @@
 package com.poo.orion.Controller;
 
-import com.poo.orion.DTO.ProdutoDTO;
+import com.poo.orion.dto.ProdutoDTO;
 import com.poo.orion.Model.Produto;
-import com.poo.orion.Service.ProdutoService;
+import com.poo.orion.service.ProdutoService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -14,13 +14,14 @@ import java.util.List;
 @RestController
 @RequestMapping("produtos")
 public class ProdutoController {
+
     private final ProdutoService service;
 
     public ProdutoController(ProdutoService service) {
         this.service = service;
     }
 
-    @GetMapping(value = "/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<ProdutoDTO> getId(@PathVariable Long id) {
         Produto produto = service.findById(id);
         return ResponseEntity.ok(ProdutoDTO.from(produto));
@@ -28,8 +29,7 @@ public class ProdutoController {
 
     @GetMapping
     public ResponseEntity<List<ProdutoDTO>> getAllProdutos(){
-        List<ProdutoDTO> produto = service.getAllProdutos();
-        return ResponseEntity.ok(produto);
+        return ResponseEntity.ok(service.getAllProdutos());
     }
 
     @PostMapping("/criar")
@@ -45,8 +45,7 @@ public class ProdutoController {
             @PathVariable Long id,
             @RequestBody ProdutoDTO produtoDTO
     ) {
-        ProdutoDTO atualizado = service.putProduto(id, produtoDTO);
-        return ResponseEntity.ok(atualizado);
+        return ResponseEntity.ok(service.putProduto(id, produtoDTO));
     }
 
     @DeleteMapping("/{id}")
@@ -62,9 +61,12 @@ public class ProdutoController {
     }
 
     @GetMapping("/categoria")
-    public ResponseEntity<List<ProdutoDTO>> getAllCategoria(@RequestParam(required = false) String categoria){
+    public ResponseEntity<List<ProdutoDTO>> getAllCategoria(
+            @RequestParam(required = false) String categoria
+    ){
         List<ProdutoDTO> produtos =
-                (categoria != null) ? service.getProdutosByCategoria(categoria)
+                (categoria != null)
+                        ? service.getProdutosByCategoria(categoria)
                         : service.getAllProdutos();
 
         return ResponseEntity.ok(produtos);

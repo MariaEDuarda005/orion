@@ -1,15 +1,15 @@
-package com.poo.orion.Service;
+package com.poo.orion.service;
 
-import com.poo.orion.DTO.ProdutoDTO;
-import com.poo.orion.Enum.Categoria;
-import com.poo.orion.Model.Produto;
-import com.poo.orion.Repository.ProdutoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
+
+import com.poo.orion.dto.ProdutoDTO;
+import com.poo.orion.Enum.Categoria;
+import com.poo.orion.Model.Produto;
+import com.poo.orion.Repository.ProdutoRepository;
 
 @Service
 @AllArgsConstructor
@@ -18,13 +18,12 @@ public class ProdutoService {
     private final ProdutoRepository repository;
 
     public Produto findById(Long id){
-        return repository.findByIdProduto(id).orElse(null);
+        return repository.findById(id).orElse(null);
     }
 
     public List<ProdutoDTO> getAllProdutos(){
-        List<Produto> produtos = repository.findAll();
-
-        return produtos.stream()
+        return repository.findAll()
+                .stream()
                 .map(ProdutoDTO::from)
                 .collect(Collectors.toList());
     }
@@ -36,13 +35,15 @@ public class ProdutoService {
     }
 
     public ProdutoDTO putProduto(Long id, ProdutoDTO produtodto) {
+
         Produto produto = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
 
         if (produtodto.nome() != null && !produtodto.nome().trim().isEmpty()) {
             String novoNome = produtodto.nome().trim();
-            if (!produto.getNome().equalsIgnoreCase(novoNome)){
-                if (repository.existsByNameIgnoreCase(novoNome)){
+
+            if (!produto.getNome().equalsIgnoreCase(novoNome)) {
+                if (repository.existsByNameIgnoreCase(novoNome)) {
                     throw new RuntimeException("Ops! Esse nome de produto já está cadastrado");
                 }
                 produto.setNome(novoNome);
@@ -76,18 +77,13 @@ public class ProdutoService {
     }
 
     public List<ProdutoDTO> getProdutosByCategoria(String categoria) {
-        try {
-            Categoria catEnum = Categoria.valueOf(categoria.toUpperCase());
-            Optional<Produto> produtos = repository.findByCategoria(catEnum);
 
-            return produtos.stream()
-                    .map(ProdutoDTO::from)
-                    .collect(Collectors.toList());
+        Categoria catEnum = Categoria.valueOf(categoria.toUpperCase());
 
-        } catch (IllegalArgumentException e) {
-            throw new RuntimeException("Categoria inválida: " + categoria);
-        }
+        List<Produto> produtos = repository.findByCategoria(catEnum);
+
+        return produtos.stream()
+                .map(ProdutoDTO::from)
+                .collect(Collectors.toList());
     }
-
-
 }
