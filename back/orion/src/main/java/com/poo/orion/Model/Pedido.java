@@ -28,11 +28,10 @@ public class Pedido {
     @JoinColumn(name = "id_cliente")
     private Cliente cliente;
 
-    // Um pedido pode ter vários itens do carrinho (produtos)
     @OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Carrinho> itens;
+    private List<PedidoItem> itens;
 
-    // Um pedido pode ter um cupom
+    // Um pedido pode ter vários cupons
     @ManyToOne
     @JoinColumn(name = "id_cupom")
     private Cupom cupom;

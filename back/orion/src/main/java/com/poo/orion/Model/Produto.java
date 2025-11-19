@@ -26,8 +26,4 @@ public class Produto {
 
     @Enumerated(EnumType.STRING)
     private Categoria categoria;
-
-    // Um produto pode aparecer em vários itens de pedido
-    @OneToMany(mappedBy = "produto", fetch = FetchType.LAZY)
-    private List<Carrinho> itens;
 }

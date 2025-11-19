@@ -4,33 +4,30 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Entity
-@Table(name = "carrinho")
+@Table(name = "pedido_item")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Carrinho {
+public class PedidoItem {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long idCarrinho;
+    private Long idItem;
 
     @ManyToOne
-    @JoinColumn(name = "id_cliente")
-    private Cliente cliente;
+    @JoinColumn(name = "id_pedido")
+    private Pedido pedido;
 
-    // Dados do produto copiados no momento da adição
     private Long idProduto;
     private String nomeProduto;
-    private String imagem;
     private BigDecimal precoUnitario;
-
     private int quantidade;
+    private BigDecimal subtotal;
 
-    public BigDecimal getSubTotal() {
-        return precoUnitario.multiply(BigDecimal.valueOf(quantidade));
+    public void calcularSubtotal() {
+        this.subtotal = precoUnitario.multiply(BigDecimal.valueOf(quantidade));
     }
 }

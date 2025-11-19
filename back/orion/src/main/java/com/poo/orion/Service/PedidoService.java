@@ -1,9 +1,12 @@
 package com.poo.orion.Service;
 
 import com.poo.orion.DTO.CarrinhoDTO;
+import com.poo.orion.DTO.FinalizarPedidoDTO;
 import com.poo.orion.DTO.PedidoDTO;
+import com.poo.orion.DTO.PedidoItemDTO;
 import com.poo.orion.Model.*;
 import com.poo.orion.Repository.*;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -19,13 +22,17 @@ public class PedidoService {
     private final CupomRepository cupomRepository;
     private final ProdutoRepository produtoRepository;
     private final CarrinhoRepository carrinhoRepository;
+    private final PedidoItemRepository pedidoItemRepository;
+    private final PedidoItemService pedidoItemService;
 
-    public PedidoService(PedidoRepository pedidoRepository, ClienteRepository clienteRepository, CupomRepository cupomRepository, ProdutoRepository produtoRepository, CarrinhoRepository carrinhoRepository) {
+    public PedidoService(PedidoRepository pedidoRepository, ClienteRepository clienteRepository, CupomRepository cupomRepository, ProdutoRepository produtoRepository, CarrinhoRepository carrinhoRepository, PedidoItemRepository pedidoItemRepository, PedidoItemService pedidoItemService) {
         this.pedidoRepository = pedidoRepository;
         this.clienteRepository = clienteRepository;
         this.cupomRepository = cupomRepository;
         this.produtoRepository = produtoRepository;
         this.carrinhoRepository = carrinhoRepository;
+        this.pedidoItemRepository = pedidoItemRepository;
+        this.pedidoItemService = pedidoItemService;
     }
 
     public List<PedidoDTO> getAllPedidos() {
@@ -39,7 +46,8 @@ public class PedidoService {
                 .orElseThrow(() -> new RuntimeException("Pedido não encontrado")));
     }
 
-    public PedidoDTO createPedido(PedidoDTO dto) {
+    @Transactional
+    public void createPedido(FinalizarPedidoDTO dto) {
         Pedido pedido = new Pedido();
         pedido.setDataPedido(new Date());
 
@@ -47,39 +55,16 @@ public class PedidoService {
                 .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
         pedido.setCliente(cliente);
 
-        if(dto.cupomId() != null){
+        if (dto.cupomId() != null) {
             Cupom cupom = cupomRepository.findById(dto.cupomId())
                     .orElseThrow(() -> new RuntimeException("Cupom não encontrado"));
             pedido.setCupom(cupom);
         }
 
-        List<Carrinho> carrinhoItens = new ArrayList<>();
-        BigDecimal valorTotal = BigDecimal.ZERO;
+        Pedido pedidoSalvo = pedidoRepository.save(pedido);
+        List<Carrinho> carrinhoList = this.carrinhoRepository.findByClienteIdCliente(dto.clienteId());
 
-        for(CarrinhoDTO itemDto : dto.itens()){
-            Produto produto = produtoRepository.findById(itemDto.produtoId())
-                    .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
-
-            Carrinho item = new Carrinho();
-            item.setProduto(produto);
-            item.setQuantidade(itemDto.quantidade());
-            item.setPrecoUnitario(BigDecimal.valueOf(produto.getPreco()));
-            item.setPedido(pedido);
-            carrinhoItens.add(item);
-
-            valorTotal = valorTotal.add(item.getSubTotal());
-        }
-
-        pedido.setItens(carrinhoItens);
-        pedido.setValorTotal(valorTotal);
-
-        Pedido salvo = pedidoRepository.save(pedido);
-        return PedidoDTO.from(salvo);
-    }
-
-    public void deletePedido(Long id) {
-        Pedido pedido = pedidoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
-        pedidoRepository.delete(pedido);
+        this.pedidoItemService.createItem(carrinhoList, pedidoSalvo);
+        this.carrinhoRepository.deleteByClienteIdCliente(dto.clienteId());
     }
 }

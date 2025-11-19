@@ -14,11 +14,17 @@ INSERT INTO cupom (codigo, percentual_desconto, validade_inicio, validade_fim, a
 VALUES ('FIT10', 10, '2025-10-01', '2025-12-31', TRUE);
 
 -- INSERIR ITENS NO CARRINHO (antes da finalização)
-INSERT INTO carrinho (id_cliente, id_produto, quantidade, preco_unitario)
+INSERT INTO carrinho (id_cliente, id_produto, nome_produto, preco_unitario, quantidade)
 VALUES
-(1, 1, 1, 119.90),   -- 1 Creatina Max
-(1, 3, 2, 59.90);    -- 2 Garrafas Fit 1L
+(1, 1, 'Creatina Max', 119.90, 1),
+(1, 3, 'Garrafa Fit 1L', 59.90, 2);
 
--- FINALIZANDO O PEDIDO (o carrinho é "convertido" em pedido)
+-- FINALIZANDO O PEDIDO (carrinho convertido em pedido)
 INSERT INTO pedido (data_pedido, valor_total, id_cliente, id_cupom)
-VALUES ('2025-11-16', 233.70, 1, 1);  -- com cupom FIT10
+VALUES ('2025-11-16', 233.70, 1, 1);
+
+-- INSERIR ITENS DO PEDIDO (pedido_item)
+INSERT INTO pedido_item (id_pedido, id_produto, nome_produto, preco_unitario, quantidade, subtotal)
+VALUES
+(1, 1, 'Creatina Max', 119.90, 1, 119.90),
+(1, 3, 'Garrafa Fit 1L', 59.90, 2, 119.80);

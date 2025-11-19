@@ -1,6 +1,8 @@
 package com.poo.orion.Controller;
 
 import com.poo.orion.DTO.CarrinhoDTO;
+import com.poo.orion.DTO.PedidoDTO;
+import com.poo.orion.Model.Pedido;
 import com.poo.orion.Service.CarrinhoService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -45,8 +47,9 @@ public class CarrinhoController {
 
     // Finalizar carrinho -> criar pedido
     @PostMapping("/finalizar")
-    public ResponseEntity<?> finalizarCarrinho(@RequestParam Long clienteId,
-                                               @RequestParam(required = false) Long cupomId){
-        return ResponseEntity.ok(service.finalizarCarrinho(clienteId, cupomId));
+    public ResponseEntity<PedidoDTO> finalizarCarrinho(@RequestParam Long clienteId,
+                                                       @RequestParam(required = false) Long cupomId){
+        Pedido pedido = service.finalizarCarrinho(clienteId, cupomId);
+        return ResponseEntity.ok(PedidoDTO.from(pedido));
     }
 }

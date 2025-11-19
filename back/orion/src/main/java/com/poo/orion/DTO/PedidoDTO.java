@@ -7,11 +7,11 @@ import java.util.List;
 public record PedidoDTO(
         Long clienteId,
         Long cupomId,
-        List<CarrinhoDTO> itens
+        List<PedidoItemDTO> itens
 ) {
     public static PedidoDTO from(Pedido p) {
-        List<CarrinhoDTO> itensDTO = p.getItens().stream()
-                .map(CarrinhoDTO::from)
+        List<PedidoItemDTO> itensDTO = p.getItens().stream()
+                .map(PedidoItemDTO::from)
                 .toList();
 
         return new PedidoDTO(
