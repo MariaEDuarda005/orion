@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class PedidoService {
+
     private final PedidoRepository pedidoRepository;
     private final ClienteRepository clienteRepository;
     private final CupomRepository cupomRepository;
@@ -42,8 +43,9 @@ public class PedidoService {
     }
 
     public PedidoDTO getPedidoById(Long id) {
-        return PedidoDTO.from(pedidoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pedido não encontrado")));
+        Pedido pedido = pedidoRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Pedido não encontrado"));
+        return PedidoDTO.from(pedido);
     }
 
     @Transactional

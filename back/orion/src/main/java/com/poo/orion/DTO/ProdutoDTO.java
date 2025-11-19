@@ -1,4 +1,4 @@
-package com.poo.orion.DTO;
+package com.poo.orion.dto;
 
 import com.poo.orion.Enum.Categoria;
 import com.poo.orion.Model.Produto;
@@ -24,7 +24,7 @@ public record ProdutoDTO(
 
     public Produto toEntity() {
         Produto produto = new Produto();
-        produto.setIdProduto(this.id); // necessário se quiser atualizar
+        produto.setIdProduto(this.id);
         produto.setNome(this.nome);
         produto.setDescricao(this.descricao);
         produto.setEstoque(this.estoque);

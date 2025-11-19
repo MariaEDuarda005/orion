@@ -1,15 +1,16 @@
 package com.poo.orion.Service;
 
-import com.poo.orion.DTO.ProdutoDTO;
-import com.poo.orion.Enum.Categoria;
-import com.poo.orion.Model.Produto;
-import com.poo.orion.Repository.ProdutoRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import com.poo.orion.dto.ProdutoDTO;
+import com.poo.orion.Enum.Categoria;
+import com.poo.orion.Model.Produto;
+import com.poo.orion.Repository.ProdutoRepository;
 
 @Service
 @AllArgsConstructor
@@ -18,13 +19,12 @@ public class ProdutoService {
     private final ProdutoRepository repository;
 
     public Produto findById(Long id){
-        return repository.findByIdProduto(id).orElse(null);
+        return repository.findById(id).orElse(null);
     }
 
     public List<ProdutoDTO> getAllProdutos(){
-        List<Produto> produtos = repository.findAll();
-
-        return produtos.stream()
+        return repository.findAll()
+                .stream()
                 .map(ProdutoDTO::from)
                 .collect(Collectors.toList());
     }
@@ -36,13 +36,15 @@ public class ProdutoService {
     }
 
     public ProdutoDTO putProduto(Long id, ProdutoDTO produtodto) {
+
         Produto produto = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
 
         if (produtodto.nome() != null && !produtodto.nome().trim().isEmpty()) {
             String novoNome = produtodto.nome().trim();
-            if (!produto.getNome().equalsIgnoreCase(novoNome)){
-                if (repository.existsByNameIgnoreCase(novoNome)){
+
+            if (!produto.getNome().equalsIgnoreCase(novoNome)) {
+                if (repository.existsByNameIgnoreCase(novoNome)) {
                     throw new RuntimeException("Ops! Esse nome de produto já está cadastrado");
                 }
                 produto.setNome(novoNome);
